@@ -31,6 +31,22 @@ Add original JPG, PNG, WebP or GIF files (up to 100 per batch, 10 MB each). The 
 
 **Add destination photos** optionally searches Wikimedia Commons within 1 km of a memory's coordinates. The user initiates the request; it sends those coordinates to Wikimedia, but does not upload your personal photos or Timeline. Results may be empty or unavailable. Selected photos retain their author, license and source link and are labelled as destination images, not photos of your visit. They load remotely rather than being included as offline image files in backups. No API key is required. Network access to `commons.wikimedia.org` and `upload.wikimedia.org` is needed.
 
+## Google Maps place names, public photos and reviews
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/) and create a project.
+2. Link a billing account, then enable [Places API (New)](https://console.cloud.google.com/apis/library/places.googleapis.com).
+3. Open **APIs & Services → Credentials → Create credentials → API key**. Restrict the key to **Places API (New)**. This is a server-side web-service key, not a browser Maps JavaScript key; browser HTTP-referrer restrictions do not apply to this server route. If you have a stable server egress IP, restrict the key to it. Configure quotas and billing alerts in your Google project. Requested review/photo fields can incur Google charges.
+4. Create `.env.local` beside `package.json` and add `GOOGLE_MAPS_API_KEY=your_key`. This file is ignored by Git. Never use a `VITE_` prefix: that would expose the key in browser code. Do not paste the key into chat or commit it.
+5. Stop and restart `npm run dev`.
+
+While importing, choose **Find name on Google Maps** beside a visit. If the Timeline contains a Google place ID, that exact place is retrieved; otherwise Google returns up to five candidates within 100 metres, ranked by distance. Confirm which place you visited. The **Your place label** field remains your own editable journal label. Google-provided names are shown live, rather than being copied into your backup. Photo matching continues to use the original Timeline and EXIF coordinates and dates, not a guessed nearby business.
+
+For saved memories, choose **Identify place on Google Maps** to link a place. The linked memory displays the fresh Google place name and address. **Google place photos & reviews** displays attributed public images and a limited sample of reviews ordered by Google relevance, with links to the originals. Reviews provide visitor context; they are not your own experience, and public images are not pictures of your visit. Google content is not inserted into your personal story as fact.
+
+Only the confirmed Google place ID is retained in IndexedDB/backups. Names, addresses, review text, photo references and media URLs are fetched fresh and not persisted. The original Timeline coordinates remain the basis for your own photo matching. Linked memories open the exact location in Google Maps; the OpenStreetMap panel is not shown alongside Google place content. Google photo references can expire, so the server obtains a fresh reference when loading a photo.
+
+The Vite development and preview servers include `/api/google` routes that hold the API key server-side. Both bind to loopback by default. Do not expose these unauthenticated development servers publicly. A static `dist` deployment alone cannot perform Google lookups; production requires an authenticated server adapter and private server-side key configuration. Google Cloud application-default credentials for unrelated services are not automatically reused for Maps billing. No live Google lookup can be verified until you supply a usable key and billing project.
+
 ## Current limits
 
 Data, including photos, is stored in IndexedDB on this browser and origin. It does not sync between devices; clearing browser storage removes it. Export regular backups. This is a local prototype, not an authenticated online service. Invitation-only sharing is not implemented; the privacy dialog explains this and sends no invitations. A production version needs authentication, server-side trip permissions, secure photo storage, and invitation handling. No API credentials are required by this prototype.

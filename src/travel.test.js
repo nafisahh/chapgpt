@@ -13,6 +13,10 @@ test('modern visits keep the recorded local day and parse both coordinate shapes
   assert.equal(visits[0].startTime, '2026-05-19T22:30:00.000Z');
   assert.equal(visits[0].lat, 38.713); assert.equal(visits[1].place, 'The café');
 });
+test('Google place IDs survive Timeline parsing for exact lookup', () => {
+  const input = structuredClone(modern); input.semanticSegments[0].visit.topCandidate.placeId = 'ChIJ_example';
+  assert.equal(parseTimeline(input)[0].googlePlaceId, 'ChIJ_example');
+});
 test('legacy exports parse E7 coordinates, timestamps and duplicate visits', () => {
   const visit = { placeVisit: { location: { name: 'Alfama', latitudeE7: 387130000, longitudeE7: -91300000 }, duration: { startTimestampMs: '1779271200000', endTimestampMs: '1779274800000' } } };
   const visits = parseTimeline({ timelineObjects: [visit, visit] });

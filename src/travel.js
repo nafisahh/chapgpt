@@ -40,7 +40,7 @@ export function parseTimeline(json) {
     const key = `${startTime}|${point?.lat}|${point?.lng}|${place}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    visits.push({ id: crypto.randomUUID(), date: recordedDate, place, lat: point?.lat ?? null, lng: point?.lng ?? null, startTime, endTime: endTime && endTime >= startTime ? endTime : null, note: '', photos: [], source: 'google-timeline', included: true });
+    visits.push({ id: crypto.randomUUID(), date: recordedDate, place, lat: point?.lat ?? null, lng: point?.lng ?? null, startTime, endTime: endTime && endTime >= startTime ? endTime : null, note: '', photos: [], source: 'google-timeline', googlePlaceId: /^[A-Za-z0-9_-]{5,200}$/.test(visit.topCandidate?.placeId || visit.location?.placeId || '') ? (visit.topCandidate?.placeId || visit.location?.placeId) : null, included: true });
   }
   if (!visits.length) throw new Error('No dated place visits were found. Export Timeline visits rather than raw location points.');
   return visits.sort((a, b) => a.startTime.localeCompare(b.startTime));

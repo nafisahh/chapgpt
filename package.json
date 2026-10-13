@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "vite --host 127.0.0.1",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0",
-    "test": "node --test src/travel.test.js"
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test src/travel.test.js server/google-places.test.js"
   },
   "dependencies": {
     "exifr": "^7.1.3",
